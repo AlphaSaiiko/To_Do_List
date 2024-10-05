@@ -15,9 +15,10 @@ function ajouterTache()
 
 		// Créer le bouton pour supprimer
 		const btnDelete = document.createElement('button');
+		btnDelete.style = 'background: #900;';
 		btnDelete.textContent = "Supprimer";
 		btnDelete.addEventListener('click', () => {
-			list_tache.removeChild(li);
+			list.removeChild(li);
 			Sauvegarde();
 		});
 
@@ -33,15 +34,20 @@ function ajouterTache()
 	}
 }
 
-// Ajouter la tâche quand on clique sur le bouton
-addTachebtn.addEventListener('click', ajouterTache);
+(function() {
 
-// Ajouter la tâche en appuyant sur Entrer
-input.addEventListener('keypress', (e) => {
-	if (e.key === "Enter") {
-		ajouterTache();
-	}
-});
+	// Ajouter la tâche quand on clique sur le bouton
+	addTachebtn.addEventListener('click', ajouterTache);
+	
+	// Ajouter la tâche en appuyant sur Entrer
+	input.addEventListener('keypress', (e) => {
+		if (e.key === "Enter") {
+			ajouterTache();
+		}
+	});
+
+})()
+
 
 //Sauvegarder les tâches 
 function saveTask()
@@ -58,8 +64,8 @@ function saveTask()
 
 //charger les taches
 function chargerTache() {
-	const Sauvegarde = JSON.stringify(localStorage.getItem('taches'));
-	if(Sauvegarde)
+	const Sauvegarde = JSON.parse(localStorage.getItem('taches'));
+	if(Sauvegarde !== null)
 	{
 		Sauvegarde.forEach(taches => {
 			const li = document.createElement('li');
@@ -86,6 +92,14 @@ function chargerTache() {
 			list.appendChild(li);
 		});
 	}
+}
+
+var Sauvegarde = () => {
+
+	console.log("TEST");
+	// TODO : méthode sauvegarder
+	
+
 }
 
 //Appel a chargerTache au démarrage 
