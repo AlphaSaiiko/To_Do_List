@@ -1,106 +1,77 @@
-// création des constantes 
-const input = document.getElementById('tache');
-const addTachebtn = document.getElementById('ajouter-tache');
-const list = document.getElementById('liste_tache');
+document.addEventListener('DOMContentLoaded', () => {
+	const list = document.getElementById('liste_tache');
+	const input = document.getElementById('tache');
+	const ajouterTacheBtn = document.getElementById('ajouter-tache');
+	const dateTache = document.getElementById
 
-//Ajouter une nouvelle tâche
-
-function ajouterTache() 
-{
-	const textTache = input.value.trim();
-
-	if (textTache !== "") {
-		const li = document.createElement('li');
-		li.textContent = textTache;
-
-		// Créer le bouton pour supprimer
-		const btnDelete = document.createElement('button');
-		btnDelete.style = 'background: #900;';
-		btnDelete.textContent = "Supprimer";
-		btnDelete.addEventListener('click', () => {
-			list.removeChild(li);
-			Sauvegarde();
-		});
-
-		li.addEventListener('click', () => {
-			li.classList.toggle('completed');
-			Sauvegarde();
-		});
-
-		li.appendChild(btnDelete);
-		list.appendChild(li);
-		input.value = "";
-		Sauvegarde();
+	// Fonction pour ajouter une tâche
+	function ajouterNouvelleTache() {
+		const taskText = input.value.trim();
+		if (taskText !== "") {
+			const task = { text: taskText, completed: false };
+			const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+			tasks.push(task);
+			localStorage.setItem('tasks', JSON.stringify(tasks));
+			ajouterTache(task, list, tasks);
+			input.value = "";
+		}
 	}
-}
 
-(function() {
+	// Événement pour le bouton "Ajouter"
+	ajouterTacheBtn.addEventListener('click', ajouterNouvelleTache);
 
-	// Ajouter la tâche quand on clique sur le bouton
-	addTachebtn.addEventListener('click', ajouterTache);
-	
-	// Ajouter la tâche en appuyant sur Entrer
-	input.addEventListener('keypress', (e) => {
-		if (e.key === "Enter") {
-			ajouterTache();
+	// Événement pour la touche "Entrée"
+	input.addEventListener('keydown', (event) => {
+		if (event.key === 'Enter') {
+			ajouterNouvelleTache();
 		}
 	});
 
-})()
+	chargerTache(list);
+});
 
+function chargerTache(list) {
+	const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-//Sauvegarder les tâches 
-function saveTask()
-{
-	const taches = [];
-	document.querySelectorAll('li').forEach(task => {
-		taches.push ({
-			text: task.firstChild.textContent,
-			completed: task.classList.contains('completed')
-		});
+	tasks.forEach(task => {
+		ajouterTache(task, list, tasks);
 	});
-	localStorage.setItem('task',JSON.stringify(taches));
 }
 
-//charger les taches
-function chargerTache() {
-	const Sauvegarde = JSON.parse(localStorage.getItem('taches'));
-	if(Sauvegarde !== null)
-	{
-		Sauvegarde.forEach(taches => {
-			const li = document.createElement('li');
-			li.textContent = taches.text;
+function ajouterTache(task, list, tasks) {
+	const li = document.createElement('li');
+	li.textContent = task.text;
 
-			if(task.completed)
-			{
-				li.classList.add('completed');
-			}
-
-			const btnDelete = document.createElement('button');
-			btnDelete.textContent = "Supprimer";
-			btnDelete.addEventListener('click', () => {
-				list.removeChild(li);
-				Sauvegarde();
-			});
-
-			li.addEventListener('click', () => {
-				li.classList.toggle('completed')
-				Sauvegarde();
-			});
-
-			li.appendChild(btnDelete);
-			list.appendChild(li);
-		});
+	if (task.completed) {
+		li.classList.add('completed');
 	}
+
+	const modifier = document.createElement('button');
+	modifier.style = 'background: black';
+	modifier.textContent = 'Modifier';
+	modifier.addEventListener('click', () => {
+		const nouveauTexte = prompt("Modifier la tâche:", task.text);
+		if (nouveauTexte !== null && nouveauTexte.trim() !== "") {
+			task.text = nouveauTexte.trim();
+			li.firstChild.textContent = task.text;
+			localStorage.setItem('tasks', JSON.stringify(tasks));
+		}
+	});
+
+	const btnDelete = document.createElement('button');
+	btnDelete.id = 'btnDelete'; // Ajout de l'ID
+	btnDelete.style = 'background: #900;';
+	btnDelete.textContent = "Supprimer";
+	btnDelete.addEventListener('click', () => {
+		list.removeChild(li);
+		const index = tasks.indexOf(task);
+		if (index > -1) {
+			tasks.splice(index, 1);
+		}
+		localStorage.setItem('tasks', JSON.stringify(tasks));
+	});
+
+	li.appendChild(modifier);
+	li.appendChild(btnDelete);
+	list.appendChild(li);
 }
-
-var Sauvegarde = () => {
-
-	console.log("TEST");
-	// TODO : méthode sauvegarder
-	
-
-}
-
-//Appel a chargerTache au démarrage 
-chargerTache();

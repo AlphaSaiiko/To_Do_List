@@ -10,13 +10,18 @@
 	
 	<div class="contient">
 		<h1> To Do List </h1>
-		<input type="text" name="tache" id="tache" placeholder=" Ajouter une tâche">
+	<form id= 'formTache' method="post">
+			<input type="text" name="tache" id="tache" placeholder=" Ajouter une tâche" required>
 
-		<button type="button" id="ajouter-tache"> Ajouter </button>
+			<input type="date" name="dateTache" id="dateTache" required>
+			<button type="button" id="ajouter-tache"> Ajouter </button>
 
-		<ul id="liste_tache"></ul>
+			<ul id="liste_tache"></ul>
 	</div>
+		
 
-	<script src="./script.js"></script>
+		<script src="./script.js"></script>
+
+	</form>
 </body>
 </html>
